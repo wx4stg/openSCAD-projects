@@ -11,7 +11,7 @@ SCREW_DIAMETER = 5;
 TAPE_MEASUREW = 21;
 TAPE_MEASUREH = 7;
 PVC_TM_GUIDE = false;
-M_TM_GUIDE = true;
+M_TM_GUIDE = false;
 
 
 // PVC pipe side
