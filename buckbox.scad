@@ -13,7 +13,11 @@ cable_inset_width = 0.4;
 wire_length_internal = 15;
 wire_diameter = 3.4;
 
+lid_tolerance = 0.2;
+tab_length = 3;
 
+lock_sphere_diameter = 5;
+lock_sphere_inset = 2.5;
 
 // Bottom half
 difference() {
@@ -60,4 +64,21 @@ difference() {
     }
 }
 
-
+// Lid
+translate([-(casing_thickness+lid_tolerance), -(casing_thickness+lid_tolerance), 10]) {
+    difference() {
+        union() {
+            // Outer shell
+            buck_length_actual = buck_length + 2*cable_cavity_length + 4*casing_thickness;
+            lid_width = buck_width + 4*casing_thickness;
+            cube([buck_length_actual, lid_width, lid_depth]);
+            // Lid tabs
+            translate([-tab_length, (lid_width- (2/3)*buck_width)/2, 0]) cube([tab_length, (2/3)*buck_width, lid_depth/2]);
+            translate([buck_length_actual, (lid_width- (2/3)*buck_width)/2, 0]) cube([tab_length, (2/3)*buck_width, lid_depth/2]);
+        }
+        // Inner cavity
+        translate([casing_thickness, casing_thickness, 0]) {
+            cube([buck_length + 2*cable_cavity_length + 2*casing_thickness + lid_tolerance, buck_width + 2*casing_thickness + 2*lid_tolerance, lid_depth-casing_thickness]);
+        }
+    }
+}
