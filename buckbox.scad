@@ -18,33 +18,43 @@ wire_diameter = 3.4;
 // Bottom half
 difference() {
     // Outer shell
-    cube([buck_length + cable_cavity_length + 2*casing_thickness, buck_width + 2*casing_thickness, (buck_depth-lid_depth)]);
+    cube([buck_length + 2*cable_cavity_length + 2*casing_thickness, buck_width + 2*casing_thickness, (buck_depth - casing_thickness)]);
     
     union() {
         // Inner cavity
-        translate([casing_thickness, casing_thickness, casing_thickness]) {
+        output_width = 3*wire_diameter;
+        south_output_inset = (buck_width/2 - output_width/2);
+        channel_rotation_angle = asin((south_output_inset - cable_inset_width)/wire_length_internal);
+        extra_length = wire_diameter*sin(channel_rotation_angle);
+        output_length = (cable_cavity_length - wire_length_internal*cos(channel_rotation_angle) + casing_thickness + extra_length);
+        translate([(casing_thickness + cable_cavity_length), casing_thickness, casing_thickness]) {
             cube([buck_length, buck_width, buck_depth*2]);
-            output_width = 3*wire_diameter;
-            south_output_inset = (buck_width/2 - output_width/2);
-            channel_rotation_angle = asin((south_output_inset - cable_inset_width)/wire_length_internal);
-            extra_length = wire_diameter*sin(channel_rotation_angle);
-            output_length = (cable_cavity_length - wire_length_internal*cos(channel_rotation_angle) + casing_thickness + extra_length);
-            // Cable cavity (south)
+            // Cable cavity (south east)
             translate([buck_length, cable_inset_width, 0]) {
                 rotate([0, 0, channel_rotation_angle]) cube([wire_length_internal, wire_diameter, buck_depth*2]);
                 
             }
-            // Cable cavity (north)
+            // Cable cavity (north east)
             translate([buck_length, buck_width - cable_inset_width - wire_diameter, 0]) {
                 translate([-extra_length, 0, 0]) rotate([0, 0, -channel_rotation_angle]) cube([wire_length_internal, wire_diameter, buck_depth*2]);
             }
-            // // Cable cavity (connecting channel)
-            // translate([buck_length + wire_length_internal - wire_diameter, cable_inset_width + wire_diameter, 0]) {
-            //     cube([wire_diameter, buck_width - 2*cable_inset_width - 2*wire_diameter, buck_depth*2]);
-            // }
-            // Cable cavity (output hole)
+            // Cable cavity (east output hole)
             translate([(buck_length + cable_cavity_length + casing_thickness) - output_length, buck_width/2 - output_width/2, 0]) {
                 cube([output_length, output_width, buck_depth*2]);
+            }
+        }
+        translate([0, casing_thickness, casing_thickness]) {
+            // Cable cavity (west output hole)
+            translate([0, buck_width/2 - output_width/2, 0]) {
+                cube([output_length, output_width, buck_depth*2]);
+            }
+            // Cable cavity (south west)
+            translate([output_length-extra_length, south_output_inset, 0]) {
+                rotate([0, 0, -channel_rotation_angle]) cube([wire_length_internal, wire_diameter, buck_depth*2]);
+            }
+            // Cable cavity (north west)
+            translate([output_length, buck_width - south_output_inset - wire_diameter, 0]) {
+                rotate([0, 0, channel_rotation_angle]) cube([wire_length_internal, wire_diameter, buck_depth*2]);
             }
         }
     }
