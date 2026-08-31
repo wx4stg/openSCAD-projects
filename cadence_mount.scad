@@ -13,7 +13,7 @@ ziptie_x = 2;
 ziptie_y = 5;
 
 extension_plate_x = 3*ziptie_x;
-extension_plate_y = 2*(ziptie_y + ziptie_y_inset);
+extension_plate_y = (ziptie_y + ziptie_y_inset);
 
 outer_x = iouter_x + 2*extension_plate_x;
 outer_y = iouter_y + 2*extension_plate_y;
